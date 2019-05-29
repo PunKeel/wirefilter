@@ -170,17 +170,26 @@ pub enum ItemRedefinitionError {
 /// For now, you can just print it in a debug or a human-readable fashion.
 #[derive(Debug, PartialEq)]
 pub struct ParseError<'i> {
+    /// The error that occurred when parsing the input
     kind: LexErrorKind,
+
+    /// The input that caused the parse error
     input: &'i str,
+
+    /// The line number on the input where the error occurred
     line_number: usize,
+
+    /// The start of the bad input
     span_start: usize,
+
+    /// The number of characters that span the bad input
     span_len: usize,
 }
 
 impl<'i> Error for ParseError<'i> {}
 
 impl<'i> ParseError<'i> {
-    pub(crate) fn new(mut input: &'i str, (kind, span): (LexErrorKind, &'i str)) -> Self {
+    pub fn new(mut input: &'i str, (kind, span): (LexErrorKind, &'i str)) -> Self {
         let mut span_start = span.as_ptr() as usize - input.as_ptr() as usize;
 
         let (line_number, line_start) = input[..span_start]
